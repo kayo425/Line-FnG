@@ -47,7 +47,7 @@ jobs:
         env:
           # 左側：Python（main.py）の中で使う変数名。あなたが決めた名前にしています。
           # 右側：GitHubの「Settings」であなたが登録した「金庫のラベル名」です。
-          LINE_TOKEN: ${{ secrets.LINE_TOKEN }}
-          LINE_user_id: ${{ secrets.LINE_user_id }}
+          TOKEN: ${{ secrets.LINE_TOKEN }}
+          user_id: ${{ secrets.LINE_user_id }}
         # 意味：最後に「python（というソフト）で main.py（というファイル）を実行しろ」と命じます。
         run: python main.py
