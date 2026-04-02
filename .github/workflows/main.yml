@@ -1,0 +1,53 @@
+# 【1. 指示書のタイトル】
+# 意味：この自動処理に名前をつけます。
+# 理由：GitHubの管理画面で、どのロボットが動いているか判別するためです。
+name: Send F&G Index
+
+# 【2. 実行するタイミング（引き金）】
+# 意味：いつ、このロボットを起動するかを決めます。
+on:
+  schedule:
+    # 理由：GitHubは世界標準時(UTC)なので、日本時間から9時間引いて設定します。
+    # 0分、12時(21時), 15時(0時), 21時(6時) に実行。
+    - cron: '0 12,15,21 * * *' 
+
+# 【3. 具体的な作業（ジョブ）】
+# 意味：ここから「何をさせるか」のリストが始まります。
+jobs:
+  build:
+    # 意味：作業に使うパソコンの種類を選びます。
+    # 理由：GitHubが無料で貸してくれる最新のLinuxパソコン(ubuntu)を指定します。
+    runs-on: ubuntu-latest
+    
+    # 意味：ここから、そのパソコンで行う「手順」を1つずつ書きます。
+    steps:
+      
+      # 【手順1：自分のファイルをコピーする】
+      # 意味：空っぽの仮想パソコンに、あなたのリポジトリの main.py などをコピーします。
+      # 理由：これを書かないと、パソコンの中に実行すべきファイルが存在しない状態になります。
+      - uses: actions/checkout@v4
+      
+      # 【手順2：Pythonを使えるようにする】
+      # 意味：借りたパソコンに Python 3.10 をインストールします。
+      # 理由：VBAを使うためにExcelを起動するのと同じで、Pythonを動かす「ソフト」を準備します。
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      # 【手順3：必要な道具をダウンロードする】
+      # 意味：ネット上の倉庫から fear-and-greed と requests というライブラリを取得します。
+      # 理由：Python標準には入っていない「外部の知恵」を使うために、実行の都度インストールが必要です。
+      - name: Install dependencies
+        run: pip install fear-and-greed requests
+        
+      # 【手順4：金庫の鍵を渡し、プログラムを実行する】
+      # 意味：GitHubの「金庫(Secrets)」の値を Python に橋渡しして、main.py を動かします。
+      - name: Run script
+        env:
+          # 左側：Python（main.py）の中で使う変数名。あなたが決めた名前にしています。
+          # 右側：GitHubの「Settings」であなたが登録した「金庫のラベル名」です。
+          LINE_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_user_id: ${{ secrets.LINE_USER_ID }}
+        # 意味：最後に「python（というソフト）で main.py（というファイル）を実行しろ」と命じます。
+        run: python main.py
