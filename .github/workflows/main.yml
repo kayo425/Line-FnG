@@ -40,7 +40,7 @@ jobs:
       # 意味：ネット上の倉庫から fear-and-greed と requests というライブラリを取得します。
       # 理由：Python標準には入っていない「外部の知恵」を使うために、実行の都度インストールが必要です。
       - name: Install dependencies
-        run: pip install fear-and-greed requests
+        run: pip install fear-and-greed requests line-bot-sdk
         
       # 【手順4：金庫の鍵を渡し、プログラムを実行する】
       # 意味：GitHubの「金庫(Secrets)」の値を Python に橋渡しして、main.py を動かします。
